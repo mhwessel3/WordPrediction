@@ -27,8 +27,6 @@ def start_program(win):
            # No input
            pass
     
-
-
 def getSuggestions():
     """
     Returns the top three word suggestions that the user may want to type
