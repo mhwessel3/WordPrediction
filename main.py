@@ -2,36 +2,43 @@ import sys
 import curses
 import os
 
-def start_program(win):
-    win.nodelay(True)
-    key=""
-    win.clear()
-    win.addstr("word1 word2 word3\n")              
-    win.addstr("")
-
-    curr_str = ""
-    while True:
-        try:
-           key = win.getkey()
-           curr_str += key
-           win.clear()
-
-           # call helper function here
-           suggestions = getSuggestions()
-           win.addstr(suggestions)
-           win.addstr(curr_str)
-           
-           if key == os.linesep:
-              break
-        except Exception as e:
-           # No input
-           pass
-    
 def getSuggestions():
     """
     Returns the top three word suggestions that the user may want to type
     """
     return "word1 word2 word3\n"
+
+def start_program(win):
+    win.nodelay(True)
+    key=""
+    win.clear()
+    win.addstr("word1 word2 word3\n")
+    win.addstr("")
+
+    curr_str = ""
+    while True:
+        try:
+            key = win.getkey()
+            if key != "KEY_UP" or key != "KEY_DOWN" or key != "KEY_RIGHT" or key != "KEY_LEFT":
+                if key not in ('KEY_BACKSPACE', '\b', '\x7f'):
+                    curr_str += key
+                else:
+                    # backspace
+                    if len(curr_str) > 0:
+                        curr_str = curr_str[:-1]
+            win.clear()
+
+            # call helper function here
+            suggestions = getSuggestions()
+            win.addstr(suggestions)
+            win.addstr(curr_str)
+           
+            if key == os.linesep:
+                curses.endwin()
+                break
+        except Exception as e:
+            # No input
+            pass
 
 def main(win):
     """
