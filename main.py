@@ -44,6 +44,5 @@ def main(win):
         except Exception as e:
            # No input
            pass
-        count += 1    
 
 curses.wrapper(main)
