@@ -2,13 +2,17 @@ import sys
 import curses
 import os
 
+from trie import Trie
+
 def getSuggestions():
     """
     Returns the top three word suggestions that the user may want to type
     """
     return "word1 word2 word3\n"
 
+
 def start_program(win):
+
     win.nodelay(True)
     key=""
     win.clear()
@@ -51,7 +55,7 @@ def main(win):
                                        ._ o o
                                        \_`-)|_
                                     ,""       \ 
-                                  ,"  ## |   ಠ ಠ. 
+                                  ,"  ## |   O O. 
                                 ," ##   ,-\__    `.
                               ,"       /     `--._;)
                             ,"     ## /
@@ -63,8 +67,15 @@ def main(win):
     print("- - - - - - - - - PRESS <enter> TO BEGIN - - - - - - - - - - - ")
     
     # START THE PROGRAM
-    input()
-    curses.wrapper(start_program)
+    #raw_input()
+    t = Trie()
+    t.initTrie()
+    while True:
+        prefix = raw_input()
+        suggestions = t.getTopSuggestions(prefix)
+        print(suggestions)
+    #curses.wrapper(trie.initTrie())
+    #curses.wrapper(start_program)
 
 if __name__ == "__main__":
     main("heh")
