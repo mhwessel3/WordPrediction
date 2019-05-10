@@ -17,6 +17,8 @@ class Trie:
             print("Trie needs to be initialized")
             return []
         """
+        if len(prefix) == 0:
+            return " \n"
         suggestions = []
 
         try:
@@ -25,9 +27,9 @@ class Trie:
             suggestions = []
 
         if len(suggestions) > num_sug:
-            return suggestions[:num_sug]
+            return " ".join(suggestions[:num_sug])+"\n"
         else:
-            return suggestions
+            return " ".join(suggestions)+"\n"
 
         """
         while True:

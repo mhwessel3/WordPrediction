@@ -2,16 +2,11 @@ import sys
 import curses
 import os
 
-from trie import Trie
-
-def getSuggestions():
-    """
-    Returns the top three word suggestions that the user may want to type
-    """
-    return "word1 word2 word3\n"
-
+from Trie import Trie
 
 def start_program(win):
+    t = Trie()
+    t.initTrie()
 
     win.nodelay(True)
     key=""
@@ -19,23 +14,27 @@ def start_program(win):
     win.addstr("word1 word2 word3\n")
     win.addstr("")
 
+    sentence_str = ""
     curr_str = ""
     while True:
         try:
             key = win.getkey()
-            if key != "KEY_UP" or key != "KEY_DOWN" or key != "KEY_RIGHT" or key != "KEY_LEFT":
-                if key not in ('KEY_BACKSPACE', '\b', '\x7f'):
-                    curr_str += key
+            if key != "KEY_UP" or key != "KEY_DOWN" or key != "KEY_RIGHT" or key != "KEY_LEFT":    
+                if key in ('KEY_BACKSPACE', '\b', '\x7f'):
+                    if len(sentence_str) > 0:
+                        sentence_str = sentence_str[:-1]
+                elif key == " ":
+                    curr_str = ""
+                    sentence_str += key
                 else:
-                    # backspace
-                    if len(curr_str) > 0:
-                        curr_str = curr_str[:-1]
+                    curr_str += key
+                    sentence_str += key
             win.clear()
 
             # call helper function here
-            suggestions = getSuggestions()
+            suggestions = t.getTopSuggestions(curr_str)
             win.addstr(suggestions)
-            win.addstr(curr_str)
+            win.addstr(sentence_str)
            
             if key == os.linesep:
                 curses.endwin()
@@ -67,15 +66,15 @@ def main(win):
     print("- - - - - - - - - PRESS <enter> TO BEGIN - - - - - - - - - - - ")
     
     # START THE PROGRAM
-    #raw_input()
-    t = Trie()
-    t.initTrie()
-    while True:
-        prefix = raw_input()
-        suggestions = t.getTopSuggestions(prefix)
-        print(suggestions)
+    # t = Trie()
+    # t.initTrie()
+    # while True:
+    #     prefix = raw_input()
+    #     suggestions = t.getTopSuggestions(prefix)
+    #     print(suggestions)
     #curses.wrapper(trie.initTrie())
-    #curses.wrapper(start_program)
+    raw_input()
+    curses.wrapper(start_program)
 
 if __name__ == "__main__":
     main("heh")
