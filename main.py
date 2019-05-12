@@ -30,8 +30,7 @@ def start_program(win):
 
     win.nodelay(True)
     win.clear()
-    win.addstr("word1 word2 word3\n")
-    win.addstr("")
+    win.addstr(d.getTopSuggestions(""))
 
     arrow_val = -1
     sentence_str = curr_str = suggestions = key = ""
@@ -76,6 +75,7 @@ def start_program(win):
                         sentence_str = sentence_str[:-1]
                     sentence_str += sug_arr[arrow_val]
                     d.last_word = sug_arr[arrow_val]
+                    sentence_stack.append(sug_arr[arrow_val])
                     sentence_str += " "
                     curr_str = ""
             
