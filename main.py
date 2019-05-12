@@ -6,14 +6,21 @@ from Trie import Trie
 from BigramTrainer import BigramTrainer
 
 def arrow_key(key):
+    """
+    Returns an integer that represents what key was hit
+    -1 = no arrow key was hit
+    0 = left
+    1 = middle (up or down)
+    2 = right
+    """
     if key == "KEY_UP" or key == "KEY_DOWN":
-        return (False, True, False)
+        return 1
     elif key == "KEY_RIGHT":
-        return (False, False, True)
+        return 2
     elif key == "KEY_LEFT": 
-        return (True, False, False)
+        return 0
     else:
-        return (False, False, False)
+        return -1
 
 def start_program(win):
     #t = Trie()
@@ -26,15 +33,15 @@ def start_program(win):
     win.addstr("word1 word2 word3\n")
     win.addstr("")
 
+    arrow_val = -1
     sentence_str = curr_str = suggestions = key = ""
-    left = middle = right = False
     while True:
         try:
             key = win.getkey()
-            left, middle, right = arrow_key(key)
-            if (not right and not left and not middle):
+            arrow_val = arrow_key(str(key))
+            if (arrow_val == -1):
                 """
-                No words have been selected using the arrow keys
+                No arrow key has been hit
                 """
                 if key in ('KEY_BACKSPACE', '\b', '\x7f'):
                     if len(sentence_str) > 0:
@@ -56,21 +63,15 @@ def start_program(win):
                 """
                 A word has been selected using the arrow keys
                 """
-                l, m, r = suggestions[:-1].split(" ")
-                while(len(sentence_str) > 0 and sentence_str[len(sentence_str)-1] != " "):
-                    sentence_str = sentence_str[:-1]
-                if left:
-                    sentence_str += l
-                    d.last_word = l
-                elif right:
-                    sentence_str += r
-                    d.last_word = r
-                else:
-                    sentence_str += m
-                    d.last_word = m
-                left = right = middle = False
-                sentence_str += " "
-                curr_str = ""
+                sug_arr = suggestions[:-1].split(" ")
+                if len(sug_arr) > arrow_val:
+                    while(len(sentence_str) > 0 and sentence_str[len(sentence_str)-1] != " "):
+                        sentence_str = sentence_str[:-1]
+                    sentence_str += sug_arr[arrow_val]
+                    d.last_word = sug_arr[arrow_val]
+                    sentence_str += " "
+                    curr_str = ""
+            
             win.clear()
             
             suggestions = d.getTopSuggestions(curr_str.lower())
