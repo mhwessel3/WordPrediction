@@ -29,10 +29,12 @@ def start_program(win):
                     if len(curr_str) > 0:
                         curr_str = curr_str[:-1]
                 elif key == " ":
+                    d.learn(curr_str.lower())
                     d.last_word = curr_str.lower()
                     curr_str = ""
                     sentence_str += key
                 elif key == "." or  key == "!" or  key == "?":
+                    d.learn(curr_str.lower())
                     d.last_word = ""
                     curr_str = ""
                     sentence_str +=key

@@ -4,10 +4,13 @@ import string
 
 class BigramTrainer:
 
+    
+
     def __init__(self):
         self.bigram_freqs = defaultdict(dict)
         self.unigram_freqs = defaultdict(int)
         self.last_word = ""
+        self.USER_MULTIPLER = 50
 
     def initBigram(self):
         filepath = 'data/w2_.txt'
@@ -37,7 +40,6 @@ class BigramTrainer:
             print(prev, curr, self.bigram_freqs[prev][curr])
     
     def getTopSuggestions(self, prefix, num_sug=3):
-        suggestions = []
         if self.last_word == "" or self.last_word not in self.bigram_freqs:
             top_freqs = sorted(self.unigram_freqs, key=self.unigram_freqs.get, reverse=True)
             suggestions = [word for word in top_freqs if word.startswith(prefix)]
@@ -49,6 +51,21 @@ class BigramTrainer:
         if len(suggestions) == 0:
             return ""
         return " ".join(suggestions[:num_sug])+"\n"
+
+    def learn(self, word):
+        if word not in self.unigram_freqs:
+            self.unigram_freqs[word] = self.USER_MULTIPLER
+        else:
+            self.unigram_freqs[word] += self.USER_MULTIPLER
+        if self.last_word != "":
+            if self.last_word not in self.bigram_freqs:
+                self.bigram_freqs[self.last_word] = defaultdict(int)
+            if word not in self.bigram_freqs[self.last_word]:
+                self.bigram_freqs[self.last_word][word] = self.USER_MULTIPLER
+            else:
+                self.bigram_freqs[self.last_word][word] += self.USER_MULTIPLER
+
+
 
 
 
