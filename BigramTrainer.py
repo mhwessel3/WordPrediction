@@ -65,10 +65,6 @@ class BigramTrainer:
             else:
                 self.bigram_freqs[self.last_word][word] += self.USER_MULTIPLER
 
-
-
-
-
 """
 def main():
 """

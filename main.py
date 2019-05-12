@@ -5,6 +5,16 @@ import os
 from Trie import Trie
 from BigramTrainer import BigramTrainer
 
+def arrow_key(key):
+    if key == "KEY_UP" or key == "KEY_DOWN":
+        return (False, True, False)
+    elif key == "KEY_RIGHT":
+        return (False, False, True)
+    elif key == "KEY_LEFT": 
+        return (True, False, False)
+    else:
+        return (False, False, False)
+
 def start_program(win):
     #t = Trie()
     #t.initTrie()
@@ -12,49 +22,40 @@ def start_program(win):
     d.initBigram()
 
     win.nodelay(True)
-    key=""
     win.clear()
     win.addstr("word1 word2 word3\n")
     win.addstr("")
 
-    sentence_str = ""
-    curr_str = ""
-    suggestions = ""
+    sentence_str = curr_str = suggestions = key = ""
     left = middle = right = False
     while True:
         try:
             key = win.getkey()
-            if key == "KEY_UP" or key == "KEY_DOWN":
-                # user has selected the middle word
-                middle = True
-            elif key == "KEY_RIGHT":
-                # user has selected the right word
-                right = True
-            elif key == "KEY_LEFT":
-                # user has selected the left word
-                left = True
-            elif key in ('KEY_BACKSPACE', '\b', '\x7f'):
-                if len(sentence_str) > 0:
-                    sentence_str = sentence_str[:-1]
-                if len(curr_str) > 0:
-                    curr_str = curr_str[:-1]
-            elif key == " ":
-                d.learn(curr_str.lower())
-                d.last_word = curr_str.lower()
-                curr_str = ""
-                sentence_str += key
-            elif key == "." or  key == "!" or  key == "?":
-                d.learn(curr_str.lower())
-                d.last_word = ""
-                curr_str = ""
-                sentence_str +=key
+            left, middle, right = arrow_key(key)
+            if (not right and not left and not middle):
+                """
+                No words have been selected using the arrow keys
+                """
+                if key in ('KEY_BACKSPACE', '\b', '\x7f'):
+                    if len(sentence_str) > 0:
+                        sentence_str = sentence_str[:-1]
+                    if len(curr_str) > 0:
+                        curr_str = curr_str[:-1]
+                elif key == " ":
+                    d.last_word = curr_str.lower()
+                    curr_str = ""
+                    sentence_str += key
+                elif key == "." or  key == "!" or  key == "?":
+                    d.last_word = ""
+                    curr_str = ""
+                    sentence_str +=key
+                else:
+                    curr_str += key
+                    sentence_str += key
             else:
-                curr_str += key
-                sentence_str += key
-            win.clear()
-
-            # get words here
-            if (left or middle or right):
+                """
+                A word has been selected using the arrow keys
+                """
                 l, m, r = suggestions[:-1].split(" ")
                 while(len(sentence_str) > 0 and sentence_str[len(sentence_str)-1] != " "):
                     sentence_str = sentence_str[:-1]
@@ -70,6 +71,7 @@ def start_program(win):
                 left = right = middle = False
                 sentence_str += " "
                 curr_str = ""
+            win.clear()
             
             suggestions = d.getTopSuggestions(curr_str.lower())
             if suggestions == "":
@@ -89,11 +91,11 @@ def start_program(win):
 
 def main(win):
     """
-    Main method. Decodes command-line arguments, and starts the Word Prediction Trainer and/or Tester.
+    Main method. Prints directions and triggers the word prediction program.
     """
-    print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ")
-    print("- - - - - - - - - - - - WORD PREDICTOR - - - - - - - - - - - - ")
-    print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ")
+    print(" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ")
+    print("                          WORD PREDICTOR                         ")
+    print("                          --------------                         ")
     print("""\
                                        ._ o o
                                        \_`-)|_
@@ -104,10 +106,13 @@ def main(win):
                             ,"     ## /
                           ,"   ##    /
                     """)
-    print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ")
-    print("- - - AS YOU ENTER KEYS, POTENTIAL WORDS WILL POPULATE - - - - ")
-    print("- - - - - TO ESCAPE THE PROGRAM, TYPE \"CTRL C\" - - - - - - - ")
-    print("- - - - - - - - - PRESS <enter> TO BEGIN - - - - - - - - - - - ")
+    print("        AS YOU ENTER KEYS, POTENTIAL WORDS WILL POPULATE         ")
+    print("        THREE WORD SUGGESTIONS WILL APPEAR                       ")
+    print("        TO SELECT THE LEFT WORD, HIT THE LEFT ARROW              ")
+    print("        TO SELECT THE MIDDLE WORD, HIT THE UP ARROW              ")
+    print("        TO SELECT THE RIGHT WORD, HIT THE RIGHT ARROW            ")
+    print("        TO ESCAPE/BEGIN, PRESS <enter>                           ")
+    print(" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ")
     
     # START THE PROGRAM
     # t = Trie()
@@ -122,4 +127,4 @@ def main(win):
     #curses.wrapper(d.getTopSuggestions())
 
 if __name__ == "__main__":
-    main("heh")
+    main("")
