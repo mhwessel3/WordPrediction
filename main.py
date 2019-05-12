@@ -4,6 +4,7 @@ import os
 
 from Trie import Trie
 from BigramTrainer import BigramTrainer
+from TrigramTrainer import TrigramTrainer
 
 def arrow_key(key):
     """
@@ -28,6 +29,10 @@ def start_program(win):
     d = BigramTrainer()
     d.initBigram()
 
+    t = TrigramTrainer()
+    t.initTrigram()
+
+
     win.nodelay(True)
     win.clear()
     win.addstr(d.getTopSuggestions(""))
@@ -51,16 +56,25 @@ def start_program(win):
                     else:
                         if len(sentence_stack) > 0:
                             curr_str = sentence_stack.pop()
+                            t.second_to_last = "" if len(sentence_stack) < 2 else sentence_stack[-2]
+                            t.last_word = "" if not sentence_stack else sentence_stack[-1]
                             d.last_word = "" if not sentence_stack else sentence_stack[-1]
+
                 elif key == " ":
                     sentence_stack.append(curr_str)
                     d.learn(curr_str)
+                    t.learn(curr_str)
+                    t.second_to_last = d.last_word
+                    t.last_word = curr_str.lower()
                     d.last_word = curr_str.lower()
                     curr_str = ""
                     sentence_str += key
                 elif key == "." or  key == "!" or  key == "?":
                     sentence_stack.append(curr_str)
                     d.learn(curr_str)
+                    t.learn(curr_str)
+                    t.second_to_last = d.last_word
+                    t.last_word = ""
                     d.last_word = ""
                     curr_str = ""
                     sentence_str +=key
@@ -76,25 +90,24 @@ def start_program(win):
                     while(len(sentence_str) > 0 and sentence_str[len(sentence_str)-1] != " "):
                         sentence_str = sentence_str[:-1]
                     sentence_str += sug_arr[arrow_val]
+                    t.second_to_last = d.last_word
+                    t.last_word = sug_arr[arrow_val]
                     d.last_word = sug_arr[arrow_val]
                     sentence_stack.append(sug_arr[arrow_val])
+                    t.learn(sug_arr[arrow_val])
                     d.learn(sug_arr[arrow_val])
                     sentence_str += " "
                     curr_str = ""
             
             win.clear()
             
-            suggestions = d.getTopSuggestions(curr_str.lower())
+            suggestions = t.getTopSuggestions(curr_str.lower())
             if suggestions == "":
-                """suggestions = t.getTopSuggestions(curr_str.lower())
+                suggestions = d.getTopSuggestions(curr_str.lower())
             if suggestions == "":
-                print("oof")"""
                 suggestions = curr_str+"\n"
             win.addstr(suggestions)
             win.addstr(sentence_str)
-            win.addstr("\n"+sentence_stack+"\n")
-            win.addstr("curr_str: " + curr_str+"\n")
-            win.addstr("last word: " + d.last_word)
            
             if key == os.linesep:
                 curses.endwin()

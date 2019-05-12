@@ -20,20 +20,6 @@ class BigramTrainer:
                     self.unigram_freqs[prior] = freq
                 self.unigram_freqs[prior] += freq
                 self.bigram_freqs[prior][curr] = freq
-
-    def testBigramDict(self):
-        while True:
-            print("Prev Word?")
-            prev = raw_input()
-            if prev not in self.bigram_freqs:
-                print("Try again, word not in dictionary")
-                continue
-            print("Second Word?")
-            curr = raw_input()
-            if curr not in self.bigram_freqs[prev]:
-                print("Try again, word not in dictionary")
-                continue
-            print(prev, curr, self.bigram_freqs[prev][curr])
     
     def getTopSuggestions(self, prefix, num_sug=3):
         if self.last_word == "" or self.last_word not in self.bigram_freqs:
