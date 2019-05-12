@@ -24,8 +24,10 @@ def arrow_key(key):
         return -1
 
 def start_program(win):
-    #t = Trie()
-    #t.initTrie()
+
+    #tr = Trie()
+    #tr.initTrie()
+
     d = BigramTrainer()
     d.initBigram()
 
@@ -141,17 +143,9 @@ def main(win):
     print("        TO ESCAPE/BEGIN, PRESS <enter>                           ")
     print(" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ")
     
-    # START THE PROGRAM
-    # t = Trie()
-    # t.initTrie()
-    # while True:
-    #     prefix = raw_input()
-    #     suggestions = t.getTopSuggestions(prefix)
-    #     print(suggestions)
-    #curses.wrapper(trie.initTrie())
+   
     raw_input()
     curses.wrapper(start_program)
-    #curses.wrapper(d.getTopSuggestions())
 
 if __name__ == "__main__":
     main("")

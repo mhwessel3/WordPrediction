@@ -6,17 +6,13 @@ class Trie:
         self.trie = trie.CharTrie()
 
     def initTrie(self):
-        with open("words.txt", "r") as f:
+        with open("data/words.txt", "r") as f:
             for _, word in enumerate(f):
                 self.trie[word[:-1].lower()] = True
         print("Trie has been initialized")
 
     def getTopSuggestions(self, prefix, num_sug=3):
-        """
-        if len(self.trie.keys()) == 0:
-            print("Trie needs to be initialized")
-            return []
-        """
+    
         if len(prefix) == 0:
             return " \n"
         suggestions = []
@@ -32,11 +28,3 @@ class Trie:
             return " ".join(suggestions)+"\n"
 
         return ""
-        """
-        while True:
-            text = raw_input()
-            try:
-                print(t.keys(text))
-            except:
-                print("That prefix don't exist fool")
-        """
