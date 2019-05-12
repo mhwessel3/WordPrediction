@@ -1,11 +1,7 @@
 from collections import defaultdict
 import string
 
-
 class BigramTrainer:
-
-    
-
     def __init__(self):
         self.bigram_freqs = defaultdict(dict)
         self.unigram_freqs = defaultdict(int)

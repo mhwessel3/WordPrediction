@@ -54,11 +54,13 @@ def start_program(win):
                             d.last_word = "" if not sentence_stack else sentence_stack[-1]
                 elif key == " ":
                     sentence_stack.append(curr_str)
+                    d.learn(curr_str)
                     d.last_word = curr_str.lower()
                     curr_str = ""
                     sentence_str += key
                 elif key == "." or  key == "!" or  key == "?":
                     sentence_stack.append(curr_str)
+                    d.learn(curr_str)
                     d.last_word = ""
                     curr_str = ""
                     sentence_str +=key
@@ -76,6 +78,7 @@ def start_program(win):
                     sentence_str += sug_arr[arrow_val]
                     d.last_word = sug_arr[arrow_val]
                     sentence_stack.append(sug_arr[arrow_val])
+                    d.learn(sug_arr[arrow_val])
                     sentence_str += " "
                     curr_str = ""
             
