@@ -38,13 +38,9 @@ class BigramTrainer:
     
     def getTopSuggestions(self, prefix, num_sug=3):
         suggestions = []
-        if self.last_word == "":
+        if self.last_word == "" or self.last_word not in self.bigram_freqs:
             top_freqs = sorted(self.unigram_freqs, key=self.unigram_freqs.get, reverse=True)
-            
-            return " ".join(top_freqs[:num_sug])+"\n"
-        if self.last_word not in self.bigram_freqs:
-            top_freqs = sorted(self.unigram_freqs, key=self.unigram_freqs.get)
-            suggestions = [word for word in possible_words if word.startswith(prefix)]
+            suggestions = [word for word in top_freqs if word.startswith(prefix)]
             if len(suggestions) == 0:
                 return ""
             return " ".join(suggestions[:num_sug])+"\n"

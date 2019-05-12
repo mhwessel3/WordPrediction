@@ -26,8 +26,10 @@ def start_program(win):
                 if key in ('KEY_BACKSPACE', '\b', '\x7f'):
                     if len(sentence_str) > 0:
                         sentence_str = sentence_str[:-1]
+                    if len(curr_str) > 0:
+                        curr_str = curr_str[:-1]
                 elif key == " ":
-                    d.last_word = curr_str
+                    d.last_word = curr_str.lower()
                     curr_str = ""
                     sentence_str += key
                 elif key == "." or  key == "!" or  key == "?":
@@ -48,7 +50,6 @@ def start_program(win):
                 suggestions = curr_str+"\n"
             win.addstr(suggestions)
             win.addstr(sentence_str)
-            win.addstr("\nIt was: "+suggestions)
            
             if key == os.linesep:
                 curses.endwin()
