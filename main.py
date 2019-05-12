@@ -3,10 +3,13 @@ import curses
 import os
 
 from Trie import Trie
+from BigramTrainer import BigramTrainer
 
 def start_program(win):
-    t = Trie()
-    t.initTrie()
+    #t = Trie()
+    #t.initTrie()
+    d = BigramTrainer()
+    d.initBigram()
 
     win.nodelay(True)
     key=""
@@ -24,17 +27,28 @@ def start_program(win):
                     if len(sentence_str) > 0:
                         sentence_str = sentence_str[:-1]
                 elif key == " ":
+                    d.last_word = curr_str
                     curr_str = ""
                     sentence_str += key
+                elif key == "." or  key == "!" or  key == "?":
+                    d.last_word = ""
+                    curr_str = ""
+                    sentence_str +=key
                 else:
                     curr_str += key
                     sentence_str += key
             win.clear()
 
-            # call helper function here
-            suggestions = t.getTopSuggestions(curr_str)
+            # get words here
+            suggestions = d.getTopSuggestions(curr_str.lower())
+            if suggestions == "":
+                """suggestions = t.getTopSuggestions(curr_str.lower())
+            if suggestions == "":
+                print("oof")"""
+                suggestions = curr_str+"\n"
             win.addstr(suggestions)
             win.addstr(sentence_str)
+            win.addstr("\nIt was: "+suggestions)
            
             if key == os.linesep:
                 curses.endwin()
@@ -75,6 +89,7 @@ def main(win):
     #curses.wrapper(trie.initTrie())
     raw_input()
     curses.wrapper(start_program)
+    #curses.wrapper(d.getTopSuggestions())
 
 if __name__ == "__main__":
     main("heh")

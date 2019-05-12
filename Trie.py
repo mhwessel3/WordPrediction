@@ -31,6 +31,7 @@ class Trie:
         else:
             return " ".join(suggestions)+"\n"
 
+        return ""
         """
         while True:
             text = raw_input()
