@@ -35,6 +35,7 @@ def start_program(win):
 
     arrow_val = -1
     sentence_str = curr_str = suggestions = key = ""
+    sentence_stack = []
     while True:
         try:
             key = win.getkey()
@@ -48,11 +49,17 @@ def start_program(win):
                         sentence_str = sentence_str[:-1]
                     if len(curr_str) > 0:
                         curr_str = curr_str[:-1]
+                    else:
+                        if len(sentence_stack) > 0:
+                            curr_str = sentence_stack.pop()
+                            d.last_word = "" if not sentence_stack else sentence_stack[-1]
                 elif key == " ":
+                    sentence_stack.append(curr_str)
                     d.last_word = curr_str.lower()
                     curr_str = ""
                     sentence_str += key
                 elif key == "." or  key == "!" or  key == "?":
+                    sentence_stack.append(curr_str)
                     d.last_word = ""
                     curr_str = ""
                     sentence_str +=key
@@ -82,6 +89,9 @@ def start_program(win):
                 suggestions = curr_str+"\n"
             win.addstr(suggestions)
             win.addstr(sentence_str)
+            win.addstr("\n"+sentence_stack+"\n")
+            win.addstr("curr_str: " + curr_str+"\n")
+            win.addstr("last word: " + d.last_word)
            
             if key == os.linesep:
                 curses.endwin()
